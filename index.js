@@ -26,31 +26,31 @@ async function run() {
     await client.connect();
     // console.log("database connected successfully");
     const database = client.db("tourism_site");
-    const provideCollection = database.collection("provides");
+    const serviceCollection = database.collection("services");
     const tripCollection = database.collection("trips");
 
-    //Get Provides API
-    app.get("/provides", async (req, res) => {
-      const cursor = provideCollection.find({});
-      const provides = await cursor.toArray();
-      res.send(provides);
+    //Get Services API
+    app.get("/services", async (req, res) => {
+      const cursor = serviceCollection.find({});
+      const services = await cursor.toArray();
+      res.send(services);
     });
 
     //Get Single Service
-    app.get("/provides/:id", async (req, res) => {
+    app.get("/services/:id", async (req, res) => {
       const id = req.params.id;
-      console.log("getting specific provide", id);
+      console.log("getting specific service", id);
       const query = { _id: ObjectId(id) };
-      const provide = await provideCollection.findOne(query);
-      res.json(provide);
+      const service = await serviceCollection.findOne(query);
+      res.json(service);
     });
 
     //POST API
-    app.post("/provides", async (req, res) => {
-      const provide = req.body;
-      console.log("hit the post api", provide);
+    app.post("/services", async (req, res) => {
+      const service = req.body;
+      console.log("hit the post api", service);
 
-      // const provide = {
+      // const service = {
       //   id: 1,
       //   name: "Destination Vacation",
       //   description:
@@ -58,16 +58,16 @@ async function run() {
       //   img: "https://wildernesswanderings.org/wp-content/uploads/2017/03/Mauritius-4.jpg",
       // };
 
-      const result = await provideCollection.insertOne(provide);
+      const result = await serviceCollection.insertOne(service);
       console.log(result);
       res.json(result);
     });
 
     //DELETE API
-    app.delete("/provides/:id", async (req, res) => {
+    app.delete("/services/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
-      const result = await provideCollection.deleteOne(query);
+      const result = await serviceCollection.deleteOne(query);
       res.json(result);
     });
 
