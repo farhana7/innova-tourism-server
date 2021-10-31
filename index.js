@@ -76,7 +76,7 @@ async function run() {
       const trip = req.body;
       const result = await tripCollection.insertOne(order);
       //console.log("trip", trip);
-      res.sjson(result);
+      res.json(result);
     });
   } finally {
     // await client.close();
