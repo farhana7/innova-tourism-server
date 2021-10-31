@@ -71,13 +71,13 @@ async function run() {
       res.json(result);
     });
 
-    //Add Orders / Trips  API
-    app.post("/trips", async (req, res) => {
-      const trip = req.body;
-      const result = await tripCollection.insertOne(order);
-      //console.log("trip", trip);
-      res.json(result);
-    });
+    // //Add Orders / Trips  API
+    // app.post("/trips", async (req, res) => {
+    //   const trip = req.body;
+    //   const result = await tripCollection.insertOne(order);
+    //   //console.log("trip", trip);
+    //   res.json(result);
+    // });
   } finally {
     // await client.close();
   }
