@@ -29,14 +29,14 @@ async function run() {
     const provideCollection = database.collection("provides");
     const tripCollection = database.collection("trips");
 
-    //Get Services API
+    //Get Services/Provides API
     app.get("/provides", async (req, res) => {
       const cursor = provideCollection.find({});
       const provides = await cursor.toArray();
       res.send(provides);
     });
 
-    //Get Single Service
+    //Get Single Service/Provide
     app.get("/provides/:id", async (req, res) => {
       const id = req.params.id;
       console.log("getting specific provide", id);
