@@ -33,7 +33,7 @@ async function run() {
     app.get("/provides", async (req, res) => {
       const cursor = provideCollection.find({});
       const provides = await cursor.toArray();
-      res.send(provides);
+      res.json(provides);
     });
 
     //Get Single Service/Provide
