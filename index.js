@@ -28,6 +28,7 @@ async function run() {
     const database = client.db("tourism_site");
     const provideCollection = database.collection("provides");
     const tripCollection = database.collection("trips");
+    const usersCollection = database.collection("users");
 
     //Get Services/Provides API
     app.get("/provides", async (req, res) => {
@@ -70,6 +71,44 @@ async function run() {
       const result = await provideCollection.deleteOne(query);
       res.json(result);
     });
+
+    //for taking--------------
+    app.get("/trips", async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      // console.log(query);
+      const cursor = tripCollection.find(query);
+      const takings = await cursor.toArray();
+      res.json(takings);
+    });
+
+    app.post("/trips", async (req, res) => {
+      const takings = req.body;
+      const result = await tripCollection.insertOne(takings);
+      console.log(result);
+      res.json(result);
+    });
+
+    //users
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      const result = await tripCollection.insertOne(user);
+      console.log(result);
+      res.json(result);
+    });
+
+    // app.put("/users", async (req, res) => {
+    //   const user = req.body;
+    //   // console.log("put", user);
+    //   const filter = { email: user.email };
+    //   const options = { upsert: true };
+    //   const updateDoc = { $set: user };
+    //   const result = await usersCollection.updateOne(
+    //     filter,
+    //     updateDoc,
+    //     options
+    //   );
+    //   res.json(result);
 
     // //Add Orders / Trips  API
     // app.post("/trips", async (req, res) => {
