@@ -27,7 +27,7 @@ async function run() {
     // console.log("database connected successfully");
     const database = client.db("tourism_site");
     const provideCollection = database.collection("provides");
-    const tripCollection = database.collection("trips");
+    const bookingsCollection = client.db("tourism_site").collection("bookings");
     const usersCollection = database.collection("users");
 
     //Get Services/Provides API
@@ -72,21 +72,32 @@ async function run() {
       res.json(result);
     });
 
-    //for taking--------------
-    app.get("/trips", async (req, res) => {
-      const email = req.query.email;
-      const query = { email: email };
-      // console.log(query);
-      const cursor = tripCollection.find(query);
-      const takings = await cursor.toArray();
-      res.json(takings);
+    //Confirm Order------------------session
+    app.post("/confirmOrder", async (req, res) => {
+      const result = await bookingsCollection.insertOne(req.body);
+      res.json(result);
+      console.log(result);
+    });
+    app.get("/confirmOrder", async (req, res) => {
+      const cursor = bookingsCollection.find({});
+      const order = await cursor.toArray();
+      res.send(order);
     });
 
-    app.post("/trips", async (req, res) => {
-      const takings = req.body;
-      const result = await tripCollection.insertOne(takings);
-      console.log(result);
-      res.json(result);
+    //my Order---------------session
+    app.get("/myOrders/:email", async (req, res) => {
+      const result = bookingsCollection
+        .find({ email: req.params.email })
+        .toArray();
+      res.send(result);
+    });
+
+    //Cancel Order--------------
+    app.delete("/deleteOrder/:id", async (req, res) => {
+      const result = await bookingsCollection.deleteOne({
+        _id: ObjectId(req.params.id),
+      });
+      res.send(result);
     });
 
     //users
@@ -97,26 +108,19 @@ async function run() {
       res.json(result);
     });
 
-    // app.put("/users", async (req, res) => {
-    //   const user = req.body;
-    //   // console.log("put", user);
-    //   const filter = { email: user.email };
-    //   const options = { upsert: true };
-    //   const updateDoc = { $set: user };
-    //   const result = await usersCollection.updateOne(
-    //     filter,
-    //     updateDoc,
-    //     options
-    //   );
-    //   res.json(result);
-
-    // //Add Orders / Trips  API
-    // app.post("/trips", async (req, res) => {
-    //   const trip = req.body;
-    //   const result = await tripCollection.insertOne(order);
-    //   //console.log("trip", trip);
-    //   res.json(result);
-    // });
+    app.put("/users", async (req, res) => {
+      const user = req.body;
+      // console.log("put", user);
+      const filter = { email: user.email };
+      const options = { upsert: true };
+      const updateDoc = { $set: user };
+      const result = await usersCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
+      res.json(result);
+    });
   } finally {
     // await client.close();
   }
