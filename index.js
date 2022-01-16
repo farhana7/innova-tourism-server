@@ -27,7 +27,7 @@ async function run() {
     // console.log("database connected successfully");
     const database = client.db("tourism_site");
     const provideCollection = database.collection("provides");
-    const bookingsCollection = client.db("tourism_site").collection("bookings");
+    const bookingsCollection = database.collection("bookings");
     const usersCollection = database.collection("users");
 
     //Get Services/Provides API
@@ -75,21 +75,33 @@ async function run() {
     //Confirm Order------------------session
     app.post("/confirmOrder", async (req, res) => {
       const result = await bookingsCollection.insertOne(req.body);
-      res.json(result);
       console.log(result);
+      res.json(result);
     });
+
+    //Confirm Order-------------session
     app.get("/confirmOrder", async (req, res) => {
       const cursor = bookingsCollection.find({});
       const order = await cursor.toArray();
       res.send(order);
     });
 
-    //my Order---------------session
-    app.get("/myOrders/:email", async (req, res) => {
-      const result = bookingsCollection
-        .find({ email: req.params.email })
-        .toArray();
-      res.send(result);
+    // //my Order---------------session
+    // app.get("/myOrders/:email", async (req, res) => {
+    //   const result = await bookingsCollection
+    //     .find({ email: req.params.email })
+    //     .toArray();
+    //   res.send(result);
+    // });
+
+    app.get("/myOrders", async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      console.log(query, email);
+      const result = bookingsCollection.find(query);
+      console.log(result);
+      const pizza = await result.toArray();
+      res.json(pizza);
     });
 
     //Cancel Order--------------
